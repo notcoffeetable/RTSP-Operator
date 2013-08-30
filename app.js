@@ -8,7 +8,14 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
-var ffmpeg = require('fluent-ffmpeg');
+var redis = require('redis');
+var client = redis.createClient();
+// var ffmpeg = require('fluent-ffmpeg');
+
+// Redis error logging
+client.on("error", function (err) {
+    console.log("Error " + err);
+});
 
 var app = express();   
 var spawn = require('child_process').spawn;
@@ -38,7 +45,7 @@ app.get('/reroute', function(req, res) {
 	// ffmpeg -i rtsp://192.168.0.8:554/live/test.sdp -acodec copy -vcodec copy -async 1 -f rtsp rtsp://192.168.0.8:554/live/dean.sdp
     var sourceStream = req.query.source,
         targetStream = req.query.target;
-ffmpeg = spawn('ffmpeg', ['-i', 'rtsp://192.168.0.8:554/live/'+ sourceStream +'.sdp', '-acodec', 'copy', '-vcodec', 'copy', '-async', '1', '-f', 'rtsp', 'rtsp rtsp://192.168.0.8:554/live/'+ targetStream +'.sdp']);
+        ffmpeg = spawn('ffmpeg', ['-i', 'rtsp://192.168.0.8:554/live/'+ sourceStream +'.sdp', '-acodec', 'copy', '-vcodec', 'copy', '-async', '1', '-f', 'rtsp', 'rtsp rtsp://192.168.0.8:554/live/'+ targetStream +'.sdp']);
 
     // setTimeout(function() {
     //     ffmpeg.stderr.on('data', function() {
@@ -55,8 +62,25 @@ app.get('/reroute-stop', function(req, res) {
 
 	ffmpeg.kill();
 	}
-	res.redirect('/');
+	res.render('reroute-stop.jade', {title: "Reroute", action: "stop"})
+});
+
+app.get('/register', function(req, res) {
+	res.render('new-stream.jade', {title: 'Register Stream'})
 })
+
+app.post('/register', function(req, res) {
+// app.post('/contact/new', routes.new);
+	client.hset("rtsp-streams", req.param('stream-name'), '', redis.print);
+	res.redirect('/registered-streams');
+});
+
+app.get('/registered-streams', function(req, res) {
+	 client.hkeys("rtsp-streams", function (err, replies) {
+	 	console.log(replies);
+        res.render('registered-streams.jade', {title: 'Registered Streams', streams: replies});
+    });
+});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

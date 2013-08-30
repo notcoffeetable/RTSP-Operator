@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1= title
+  form( method="post")
+    div
+      div
+        span Stream Name :
+          input(type="text", name="stream-name", id="editStreamName")
+      div#editSubmit
+        input(type="submit", value="Register")

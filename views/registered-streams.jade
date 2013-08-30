@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1= title
+  #streams  
+  p Select the stream to reroute
+  - each stream in streams
+      div
+        a(href='/reroute?source=' + stream + '&target=program')= stream
+  div#registerNewStream
+    a(href="/register")!= "« Add New Stream »"
