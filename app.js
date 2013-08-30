@@ -45,8 +45,8 @@ app.get('/reroute', function(req, res) {
 	// ffmpeg -i rtsp://192.168.0.8:554/live/test.sdp -acodec copy -vcodec copy -async 1 -f rtsp rtsp://192.168.0.8:554/live/dean.sdp
     var sourceStream = req.query.source,
         targetStream = req.query.target;
-        ffmpeg = spawn('ffmpeg', ['-i', 'rtsp://192.168.0.8:554/live/'+ sourceStream +'.sdp', '-acodec', 'copy', '-vcodec', 'copy', '-async', '1', '-f', 'rtsp', 'rtsp rtsp://192.168.0.8:554/live/'+ targetStream +'.sdp']);
-
+        // ffmpeg = spawn('ffmpeg', ['-i', 'rtsp://192.168.1.82:554/live/'+ sourceStream +'.sdp', '-acodec', 'copy', '-vcodec', 'copy', '-async', '1', '-f', 'rtsp', 'rtsp rtsp://192.168.1.82:554/live/'+ targetStream +'.sdp']);
+ffmpeg = spawn('./live555ProxyServer', ['rtsp://192.168.1.82:554/live/'+ sourceStream +'.sdp']);
     // setTimeout(function() {
     //     ffmpeg.stderr.on('data', function() {
     //         ffmpeg.stdin.setEncoding('utf8');
