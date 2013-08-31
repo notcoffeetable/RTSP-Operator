@@ -72,7 +72,7 @@ app.get('/reroute', function(req, res) {
             oldprocess.kill();            
         }
 
-	res.render('reroute.jade', { title: 'Reroute', source: sourceServer + sourceStream + 'sdp', target: targetServer + targetStream + '.sdp'});	
+	res.render('reroute.jade', { title: 'Reroute', source: sourceServer + sourceStream + '.sdp', target: targetServer + targetStream + '.sdp'});	
 });
 
 app.get('/reroute-stop', function(req, res) {
