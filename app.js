@@ -73,7 +73,9 @@ app.get('/reroute', function(req, res) {
     configurationProvider.findAll(function(err, configurations){
         if(configurations.length > 0)
         {
-            console.log('configs: ' + util.inspect(configurations[0], false, null));   
+            if ('development' == app.get('env')) {
+                console.log('configs: ' + util.inspect(configurations[0], false, null));   
+            }
             sourceServer= configurations[0].sourceServer;
             targetServer= configurations[0].targetServer;
             targetStream= configurations[0].targetStream;       
