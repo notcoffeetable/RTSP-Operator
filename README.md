@@ -1,5 +1,9 @@
 RTSP Operator
 =============
+## Heroku Deps
+- `heroku addons:add mongolab`
+- `heroku addons:add redistogo`
+- `heroku config:add BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git`
 
 ## Dependencies
 - Express
@@ -9,8 +13,6 @@ RTSP Operator
 - a RTSP server
 
 ## Usage
-- `npm install -d`
-- `node app`
-- Go to http://[localhost]:3000/register and register your stream you currently have going to your RTSP server
-- In Registered Streams click your stream name to reroute it to "program"
-- Click "stop reroute" to select a new source stream
+- `heroku create`
+- Install heroku deps
+- git push heroku heroku:master
