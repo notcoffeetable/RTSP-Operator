@@ -3,10 +3,12 @@ extends layout
 block content
   h1= title
   #streams  
-  p Select the stream to reroute
+  p Select the stream to reroute to 
+    span= currentTarget.server
+    span= currentTarget.stream
   - each stream in streams
       div
-        a(href='/reroute?source=' + stream + '&target=program')= stream
+        a(href='/reroute?source=' + stream + '&target=' + currentTarget.stream)= stream
 //
   div#registerNewStream
     a(href="/register")!= "« Add New Stream »"

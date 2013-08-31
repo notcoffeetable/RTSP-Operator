@@ -51,16 +51,20 @@ app.get('/users', user.list);
 // GET source->target
 app.get('/reroute', function(req, res) {
     configurationProvider.findAll(function(err, configurations){
-        console.log('configs: ' + util.inspect(configurations[0], false, null));   
-        sourceServer= configurations[0].sourceServer;
-        targetServer= configurations[0].targetServer;
-        targetStream= configurations[0].targetStream;       
+        if(configurations.length > 0)
+        {
+            console.log('configs: ' + util.inspect(configurations[0], false, null));   
+            sourceServer= configurations[0].sourceServer;
+            targetServer= configurations[0].targetServer;
+            targetStream= configurations[0].targetStream;       
+        }
+        
     });
 	// ffmpeg -i rtsp://192.168.0.8:554/live/test.sdp -acodec copy -vcodec copy -async 1 -f rtsp rtsp://192.168.0.8:554/live/dean.sdp
     var sourceStream = req.query.source,
         targetStream = req.query.target;
 
-        processes.push(spawn('ffmpeg', ['-i', 'rtsp://192.168.1.82:554/live/'+ sourceStream +'.sdp', '-acodec', 'copy', '-vcodec', 'copy', '-async', '1', '-f', 'rtsp', 'rtsp rtsp://192.168.1.82:554/live/'+ targetStream +'.sdp']));
+        processes.push(spawn('ffmpeg', ['-i', sourceServer + sourceStream +'.sdp', '-acodec', 'copy', '-vcodec', 'copy', '-async', '1', '-f', 'rtsp', targetServer + targetStream +'.sdp']));
         console.log("Processes length: " + processes.length);
         if(processes.length > 1)
         {
@@ -68,7 +72,7 @@ app.get('/reroute', function(req, res) {
             oldprocess.kill();            
         }
 
-	res.render('reroute.jade', { title: 'Reroute', source: sourceStream, target: targetStream });	
+	res.render('reroute.jade', { title: 'Reroute', source: sourceServer + sourceStream + 'sdp', target: targetServer + targetStream + '.sdp'});	
 });
 
 app.get('/reroute-stop', function(req, res) {
@@ -91,7 +95,10 @@ app.post('/register', function(req, res) {
 app.get('/registered-streams', function(req, res) {
 	 client.hkeys("rtsp-streams", function (err, replies) {
 	 	console.log(replies);
-        res.render('registered-streams.jade', {title: 'Registered Streams', streams: replies});
+        res.render('registered-streams.jade', {
+            title: 'Registered Streams', 
+            currentTarget: {server: targetServer, stream: targetStream},
+            streams: replies});
     });
 });
 
