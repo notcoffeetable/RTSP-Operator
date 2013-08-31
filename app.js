@@ -9,14 +9,11 @@ var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 var redis = require('redis');
+// var client = redis.createClient();
 ConfigurationProvider = require('./configurationprovider-mongodb.js').ConfigurationProvider;
 // var forever = require('forever');
 // var ffmpeg = require('fluent-ffmpeg');
 
-// Redis error logging
-client.on("error", function (err) {
-    console.log("Error " + err);
-});
 
 var app = express();   
 var spawn = require('child_process').spawn;
@@ -29,12 +26,17 @@ var ffmpeg = false;
 
 if (process.env.REDISTOGO_URL) {
     var rtg   = require("url").parse(process.env.REDISTOGO_URL);
-    var redis = require("redis").createClient(rtg.port, rtg.hostname);
+    var client = require("redis").createClient(rtg.port, rtg.hostname);
 
     redis.auth(rtg.auth.split(":")[1]); 
 } else {
-    var redis = require("redis").createClient();
+    var client = require("redis").createClient();
 }
+
+// Redis error logging
+client.on("error", function (err) {
+    console.log("Error " + err);
+});
 
 /*
 * Configure Mongo
@@ -73,9 +75,9 @@ app.get('/reroute', function(req, res) {
     configurationProvider.findAll(function(err, configurations){
         if(configurations.length > 0)
         {
-            if ('development' == app.get('env')) {
-                console.log('configs: ' + util.inspect(configurations[0], false, null));   
-            }
+/*          if ('development' == app.get('env')) {
+        // console.log('configs: ' + util.inspect(configurations[0], false, null));   
+          } */  
             sourceServer= configurations[0].sourceServer;
             targetServer= configurations[0].targetServer;
             targetStream= configurations[0].targetStream;       
