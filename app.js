@@ -42,6 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
 if ('development' == app.get('env')) {
+  var util = require('util'); 
   app.use(express.errorHandler());
 }
 
@@ -49,10 +50,16 @@ app.get('/', routes.index);
 app.get('/users', user.list);
 // GET source->target
 app.get('/reroute', function(req, res) {
+    configurationProvider.findAll(function(err, configurations){
+        console.log('configs: ' + util.inspect(configurations[0], false, null));   
+        sourceServer= configurations[0].sourceServer;
+        targetServer= configurations[0].targetServer;
+        targetStream= configurations[0].targetStream;       
+    });
 	// ffmpeg -i rtsp://192.168.0.8:554/live/test.sdp -acodec copy -vcodec copy -async 1 -f rtsp rtsp://192.168.0.8:554/live/dean.sdp
     var sourceStream = req.query.source,
         targetStream = req.query.target;
-        // ffmpeg = spawn('ffmpeg', ['-i', 'rtsp://192.168.1.82:554/live/'+ sourceStream +'.sdp', '-acodec', 'copy', '-vcodec', 'copy', '-async', '1', '-f', 'rtsp', 'rtsp rtsp://192.168.1.82:554/live/'+ targetStream +'.sdp']);
+
         processes.push(spawn('ffmpeg', ['-i', 'rtsp://192.168.1.82:554/live/'+ sourceStream +'.sdp', '-acodec', 'copy', '-vcodec', 'copy', '-async', '1', '-f', 'rtsp', 'rtsp rtsp://192.168.1.82:554/live/'+ targetStream +'.sdp']));
         console.log("Processes length: " + processes.length);
         if(processes.length > 1)
@@ -60,39 +67,11 @@ app.get('/reroute', function(req, res) {
             var oldprocess = processes.shift();
             oldprocess.kill();            
         }
-        // ffmpeg = spawn('./live555ProxyServer', ['rtsp://192.168.1.82:554/live/'+ sourceStream +'.sdp']);
-    // setTimeout(function() {
-    //     ffmpeg.stderr.on('data', function() {
-    //         ffmpeg.stdin.setEncoding('utf8');
-    //         ffmpeg.stdin.write('q');
-    //         process.exit();
-    //     });
-    // }, 10000);
-  /*var child = forever.start([ './live555ProxyServer', 'rtsp://192.168.1.82:554/live/'+ sourceStream +'.sdp' ], {
-    max : 1,
-    silent : true
-  });*/
+
 	res.render('reroute.jade', { title: 'Reroute', source: sourceStream, target: targetStream });	
 });
 
 app.get('/reroute-stop', function(req, res) {
-/*    var procList = forever.list(false, function (err, data) {
-      if (err) {
-        console.log('Error running `forever.list()`');
-        console.dir(err);
-      }
-      
-      console.log('Data returned from `forever.list()`');
-      console.dir(data)
-    })
-    console.log(procList)
-	if(procList.length > 0){
-        forever.stopAll();
-	}*/
-    // if(ffmpeg != undefined)
-    // {
-    //     ffmpeg.kill();
-    // }
     while(processes.length > 0)
     {
         processes.shift().kill();
@@ -133,11 +112,11 @@ app.post('/configuration', function(req, res) {
     targetServer = req.param('target-server');
     targetStream = req.param('target-stream');
     configurationProvider.save({
-        sourceServer: req.param('source-server'),
-        targetServer: req.param('target-server'),
-        targetStream: req.param('target-stream')
+        sourceServer: sourceServer,
+        targetServer: targetServer,
+        targetStream: targetStream
     }, function(error, docs) {
-        res.render('index.jade', { title: 'Configuration Saved'})
+        res.redirect('/configuration');
     });
 }); 
 

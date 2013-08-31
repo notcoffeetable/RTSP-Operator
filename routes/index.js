@@ -4,5 +4,5 @@
  */
 
 exports.index = function(req, res){
-  res.render('index', { title: 'RTSP-Operator' });
+  res.render('index', { title: 'RTSP-Operator', message: "The fancy RTSP Operator"});
 };

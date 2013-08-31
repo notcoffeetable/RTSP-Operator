@@ -8,3 +8,10 @@ a {
 #registerNewStream {
   margin-top: 10px;
 }
+div.footer {
+  margin-top: 10px;
+}
+div.footer span {
+  padding-left: 2px;
+  padding-right: 3px;
+}
