@@ -9,7 +9,6 @@ var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 var redis = require('redis');
-var client = redis.createClient();
 ConfigurationProvider = require('./configurationprovider-mongodb.js').ConfigurationProvider;
 // var forever = require('forever');
 // var ffmpeg = require('fluent-ffmpeg');
