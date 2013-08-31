@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  h1= title
+  unless reroutes
+    form( method="post")
+      div
+        div
+          span Source Server :
+          input(type="text", value=sourceServer, size=30, name="source-server", id="editSourceServer")
+        div
+          span Target Server :
+          input(type="text", value=targetServer, size=30, name="target-server", id="editTargetServer")
+        div
+          span Target Stream:
+          input(type="text", value=targetStream, name="target-stream", id="editTargetStream")
+        div#editSubmit
+          input(type="submit", value="Save")
+  if reroutes
+    p Reroutes currently active, configuration not allowed. Stop routing to access configuration.
+  //
+    a(href='/reroute-stop')!= "« Stop Reroutes »"
