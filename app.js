@@ -23,7 +23,28 @@ var app = express();
 var spawn = require('child_process').spawn;
 var processes = [];
 var ffmpeg = false;
-var configurationProvider = new ConfigurationProvider('localhost', 27017);
+
+/*
+* Configure Redis
+*/
+
+if (process.env.REDISTOGO_URL) {
+    var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+    var redis = require("redis").createClient(rtg.port, rtg.hostname);
+
+    redis.auth(rtg.auth.split(":")[1]); 
+} else {
+    var redis = require("redis").createClient();
+}
+
+/*
+* Configure Mongo
+*/
+var mongoUri = process.env.MONGOLAB_URI ||
+  process.env.MONGOHQ_URL ||
+  'localhost';
+var configurationProvider = new ConfigurationProvider(mongoUri, 27017);
+
 var sourceServer = 'rtsp://192.168.1.82/live/';
 var targetServer = 'rtsp://192.168.1.82/live/';
 var targetStream = 'program';
