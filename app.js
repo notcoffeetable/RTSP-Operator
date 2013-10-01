@@ -64,7 +64,7 @@ app.get('/reroute', function(req, res) {
     var sourceStream = req.query.source,
         targetStream = req.query.target;
 
-        processes.push(spawn('ffmpeg', ['-i', sourceServer + sourceStream +'.sdp', '-acodec', 'copy', '-vcodec', 'copy', '-async', '1', '-f', 'rtsp', targetServer + targetStream +'.sdp']));
+        processes.push(spawn('ffmpeg', ['-i', sourceServer + sourceStream, '-acodec', 'copy', '-vcodec', 'copy', '-async', '1', '-f', 'rtsp', targetServer + targetStream +'.sdp']));
         console.log("Processes length: " + processes.length);
         if(processes.length > 1)
         {
