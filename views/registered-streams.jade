@@ -9,6 +9,24 @@ block content
   - each stream in streams
       div
         a(href='/reroute?source=' + stream + '&target=' + currentTarget.stream)= stream
+        div
+          | <OBJECT CLASSID="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"  WIDTH="200" HEIGHT="150" CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab";>
+          |  <PARAM NAME="src" VALUE="
+          = sourceServ + stream
+          |  ";>
+          |  <PARAM NAME="controller" VALUE="false">
+          |  <PARAM name="AUTOPLAY" VALUE="true">
+          |  <PARAM NAME="qtsrc" VALUE="
+          = sourceServ + stream
+          |  ";>
+          |  <PARAM NAME="pluginspage" VALUE="http://www.apple.com/quicktime/download/indext.html";>
+          |  <PARAM name="type" VALUE="video/quicktime">
+          |  <EMBED WIDTH="200" HEIGHT="150" scale="tofit" AUTOPLAY="true" CONTROLLER="false" SRC="
+          = sourceServ + stream
+          |  "; qtsrc="
+          = sourceServ + stream
+          |  "; BGCOLOR="FFFFFF" BORDER="0" PLUGINSPAGE="http://www.apple.com/quicktime/download/indext.html";></EMBED>
+          | </OBJECT>
 //
   div#registerNewStream
     a(href="/register")!= "« Add New Stream »"

@@ -98,6 +98,7 @@ app.get('/registered-streams', function(req, res) {
         res.render('registered-streams.jade', {
             title: 'Registered Streams', 
             currentTarget: {server: targetServer, stream: targetStream},
+            sourceServ: sourceServer, 
             streams: replies});
     });
 });
