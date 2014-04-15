@@ -119,6 +119,11 @@ app.post('/configuration', function(req, res) {
     sourceServer = req.param('source-server');
     targetServer = req.param('target-server');
     targetStream = req.param('target-stream');
+    clearStreams = req.param('clear-streams')
+    if (clearStreams)
+    {
+        client.del("rtsp-streams");
+    }
     configurationProvider.save({
         sourceServer: sourceServer,
         targetServer: targetServer,
