@@ -4,11 +4,11 @@ block content
   h1= title
   #streams  
   p Select the stream to reroute to 
-    span= currentTarget.server
-    span= currentTarget.stream
+    span= 'rtmp://' + server + ':' + rtmpPort + '/'
+    span= targetApp
   - each stream in streams
       div
-        a(target='_blank' href='/reroute?source=' + stream + '&target=' + currentTarget.stream)= stream
+        a(target='_blank' href='/reroute?stream=' + stream)= stream
         div
           | <script src="http://jwpsrv.com/library/VhLYqNFQEeOm9SIACi0I_Q.js"></script>
           | <script src="http://jwpsrv.com/library/VhLYqNFQEeOm9SIACi0I_Q.js"></script>
@@ -20,7 +20,7 @@ block content
           = stream
           |').setup({
           |         file: '
-          = 'rtmp://192.168.1.121:1935/clean/' + stream
+          = 'rtmp://' + server + ':' + rtmpPort + '/' + sourceApp +'/' + stream
           |',
           |         width: '320',
           |         height: '180',

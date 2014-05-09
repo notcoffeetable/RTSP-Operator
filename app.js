@@ -24,9 +24,11 @@ var spawn = require('child_process').spawn;
 var processes = [];
 var ffmpeg = false;
 var configurationProvider = new ConfigurationProvider('localhost', 27017);
-var sourceServer = 'rtsp://192.168.1.82/live/';
-var targetServer = 'rtsp://192.168.1.82/live/';
-var targetStream = 'program';
+var sourceServer = '192.168.1.121';
+var rtmpPort = 1935;
+var controlPort = 8080;
+var sourceApp = 'clean';
+var targetApp = 'myapp';
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -55,14 +57,15 @@ app.get('/reroute', function(req, res) {
         {
             console.log('configs: ' + util.inspect(configurations[0], false, null));   
             sourceServer= configurations[0].sourceServer;
-            targetServer= configurations[0].targetServer;
-            targetStream= configurations[0].targetStream;       
+            rtmpPort    = configurations[0].rtmpPort;
+            controlPort = configurations[0].controlPort;
+            sourceApp   = configurations[0].sourceApp;
+            targetApp   = configurations[0].targetApp;       
         }
         
     });
 	// ffmpeg -i rtsp://192.168.1.121:1935/live/Mulberry.sdp -acodec copy -vcodec copy -async 1 -f rtsp rtsp://rtsp:stream@192.168.1.121:1935/live/program.sdp
-     var sourceStream = req.query.source,
-         targetStream = req.query.target;
+     var stream = req.query.stream;
 
     //     processes.push(spawn('ffmpeg', ['-i', sourceServer + sourceStream, '-acodec', 'copy', '-vcodec', 'copy', '-async', '1', '-f', 'rtsp', targetServer + targetStream +'.sdp']));
     //     console.log("Processes length: " + processes.length);
@@ -73,9 +76,9 @@ app.get('/reroute', function(req, res) {
     //     }
 
     var options = {
-        host: '192.168.1.121',
-        port: '8080',
-        path: '/control/redirect/subscriber?app=clean&addr=127.0.0.1&newname=' + sourceStream
+        host: sourceServer,
+        port: controlPort,
+        path: '/control/redirect/subscriber?app='+sourceApp+'&addr=127.0.0.1&newname=' + stream
     }
 
     callback = function(response) {
@@ -94,7 +97,7 @@ app.get('/reroute', function(req, res) {
 
     http.request(options, callback).end();
 
-	res.render('reroute.jade', { title: 'Reroute', source: sourceServer + sourceStream, target: targetServer + targetStream});	
+	res.render('reroute.jade', { title: 'Reroute', source: stream, target: "rtmp://" +sourceServer + ':' + rtmpPort +'/' + targetApp + '/' + 'myapp' });	
 });
 
 app.get('/reroute-stop', function(req, res) {
@@ -119,8 +122,8 @@ app.get('/registered-streams', function(req, res) {
 	 	console.log(replies);
         res.render('registered-streams.jade', {
             title: 'Registered Streams', 
-            currentTarget: {server: targetServer, stream: targetStream},
-            sourceServ: sourceServer, 
+            server: sourceServer, 
+            rtmpPort: rtmpPort, controlPort: controlPort, sourceApp: sourceApp, targetApp: targetApp,
             streams: replies});
     });
 });
@@ -130,8 +133,10 @@ app.get('/configuration', function(req, res) {
     res.render('configuration.jade', {
         title: 'Configuration', 
         sourceServer: sourceServer,
-        targetServer: targetServer,
-        targetStream: targetStream,
+        rtmpPort: rtmpPort,
+        controlPort: controlPort,
+        sourceApp: sourceApp,
+        targetApp: targetApp,
         reroutes: reroutesRunning 
     });
 
@@ -139,8 +144,10 @@ app.get('/configuration', function(req, res) {
 
 app.post('/configuration', function(req, res) {
     sourceServer = req.param('source-server');
-    targetServer = req.param('target-server');
-    targetStream = req.param('target-stream');
+    targetServer = req.param('rtmp-port');
+    controlPort  = req.param('control-port');
+    sourceApp    = req.param('source-app');
+    targetApp    = req.param('target-app');
     clearStreams = req.param('clear-streams')
     if (clearStreams)
     {
@@ -148,8 +155,10 @@ app.post('/configuration', function(req, res) {
     }
     configurationProvider.save({
         sourceServer: sourceServer,
-        targetServer: targetServer,
-        targetStream: targetStream
+        rtmpPort: rtmpPort,
+        controlPort: controlPort,
+        sourceApp: sourceApp,
+        targetApp: targetApp
     }, function(error, docs) {
         res.redirect('/configuration');
     });

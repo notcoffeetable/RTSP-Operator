@@ -6,14 +6,20 @@ block content
     form( method="post")
       div
         div
-          span Source Server :
+          span Server :
           input(type="text", value=sourceServer, size=30, name="source-server", id="editSourceServer")
         div
-          span Target Server :
-          input(type="text", value=targetServer, size=30, name="target-server", id="editTargetServer")
+          span RTMP Port :
+          input(type="text", value=rtmpPort, size=6, name="rtmp-port", id="editRTMPPort")
         div
-          span Target Stream:
-          input(type="text", value=targetStream, name="target-stream", id="editTargetStream")
+          span Control Port :
+          input(type="text", value=controlPort, size=6, name="control-port", id="editControlPort")
+        div
+          span Source App:
+          input(type="text", value=sourceApp, name="source-app", id="editSourceApp")
+        div
+          span Target App:
+          input(type="text", value=targetApp, name="target-app", id="editTargetApp")
         div
           span Clear Streams:
           input(type="checkbox", value=false, name="clear-streams")
