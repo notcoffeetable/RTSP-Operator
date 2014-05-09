@@ -61,18 +61,40 @@ app.get('/reroute', function(req, res) {
         
     });
 	// ffmpeg -i rtsp://192.168.1.121:1935/live/Mulberry.sdp -acodec copy -vcodec copy -async 1 -f rtsp rtsp://rtsp:stream@192.168.1.121:1935/live/program.sdp
-    var sourceStream = req.query.source,
-        targetStream = req.query.target;
+     var sourceStream = req.query.source,
+         targetStream = req.query.target;
 
-        processes.push(spawn('ffmpeg', ['-i', sourceServer + sourceStream, '-acodec', 'copy', '-vcodec', 'copy', '-async', '1', '-f', 'rtsp', targetServer + targetStream +'.sdp']));
-        console.log("Processes length: " + processes.length);
-        if(processes.length > 1)
-        {
-            var oldprocess = processes.shift();
-            oldprocess.kill();            
-        }
+    //     processes.push(spawn('ffmpeg', ['-i', sourceServer + sourceStream, '-acodec', 'copy', '-vcodec', 'copy', '-async', '1', '-f', 'rtsp', targetServer + targetStream +'.sdp']));
+    //     console.log("Processes length: " + processes.length);
+    //     if(processes.length > 1)
+    //     {
+    //         var oldprocess = processes.shift();
+    //         oldprocess.kill();            
+    //     }
 
-	res.render('reroute.jade', { title: 'Reroute', source: sourceServer + sourceStream + '.sdp', target: targetServer + targetStream + '.sdp'});	
+    var options = {
+        host: '192.168.1.121',
+        port: '8080',
+        path: '/control/redirect/subscriber?app=clean&addr=127.0.0.1&newname=' + sourceStream
+    }
+
+    callback = function(response) {
+        var str = '';
+
+        //another chunk of data has been recieved, so append it to `str`
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        //the whole response has been recieved, so we just print it out here
+        response.on('end', function () {
+            console.log("HTTP RESPONSE: " + str);
+        });
+    }
+
+    http.request(options, callback).end();
+
+	res.render('reroute.jade', { title: 'Reroute', source: sourceServer + sourceStream, target: targetServer + targetStream});	
 });
 
 app.get('/reroute-stop', function(req, res) {
