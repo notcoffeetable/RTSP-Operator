@@ -114,8 +114,15 @@ app.get('/register', function(req, res) {
 
 app.post('/register', function(req, res) {
 	client.hset("rtsp-streams", req.param('stream-name'), '', redis.print);
+    console.log('Stream: ' + req.param('streamname'));
 	res.redirect('/registered-streams');
 });
+
+app.get('/autoregister', function(req, res) {    
+    client.hset("rtsp-streams", req.param('streamname'), '', redis.print);
+    console.log('Stream: ' + req.param('streamname'));
+    res.send('Stream: ' + req.param('streamname'));
+})
 
 app.get('/registered-streams', function(req, res) {
 	 client.hkeys("rtsp-streams", function (err, replies) {
