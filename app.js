@@ -118,9 +118,9 @@ app.post('/register', function(req, res) {
 	res.redirect('/registered-streams');
 });
 
-app.get('/autoregister', function(req, res) {    
+app.post('/autoregister', function(req, res) {    
     client.hset("rtsp-streams", req.param('streamname'), '', redis.print);
-    console.log('Stream: ' + req.param('streamname'));
+    console.log('Stream: ' + req.param('name'));
     res.send('Stream: ' + req.param('streamname'));
 })
 
