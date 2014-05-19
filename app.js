@@ -114,15 +114,22 @@ app.get('/register', function(req, res) {
 
 app.post('/register', function(req, res) {
 	client.hset("rtsp-streams", req.param('stream-name'), '', redis.print);
-    console.log('Stream: ' + req.param('streamname'));
+    console.log('Stream: ' + req.param('stream-name'));
 	res.redirect('/registered-streams');
 });
 
 app.post('/autoregister', function(req, res) {    
-    client.hset("rtsp-streams", req.param('streamname'), '', redis.print);
+    client.hset("rtsp-streams", req.param('name'), '', redis.print);
     console.log('Stream: ' + req.param('name'));
-    res.send('Stream: ' + req.param('streamname'));
-})
+    res.send('Stream: ' + req.param('name'));
+});
+
+app.post('/unregister', function(req, res) {    
+    client.hdel("rtsp-streams", req.param('name'), '', redis.print);
+    console.log('Removing Stream: ' + req.param('name'));
+    res.send('Stream: ' + req.param('name'));
+});
+
 
 app.get('/registered-streams', function(req, res) {
 	 client.hkeys("rtsp-streams", function (err, replies) {
