@@ -1,31 +1,42 @@
 extends layout
 
 block content
-  h1= title
-  unless reroutes
-    form( method="post")
-      div
-        div
-          span Server :
-          input(type="text", value=sourceServer, size=30, name="source-server", id="editSourceServer")
-        div
-          span RTMP Port :
-          input(type="text", value=rtmpPort, size=6, name="rtmp-port", id="editRTMPPort")
-        div
-          span Control Port :
-          input(type="text", value=controlPort, size=6, name="control-port", id="editControlPort")
-        div
-          span Source App:
-          input(type="text", value=sourceApp, name="source-app", id="editSourceApp")
-        div
-          span Target App:
-          input(type="text", value=targetApp, name="target-app", id="editTargetApp")
-        div
-          span Clear Streams:
-          input(type="checkbox", value=false, name="clear-streams")
-        div#editSubmit
-          input(type="submit", value="Save")
-  if reroutes
-    p Reroutes currently active, configuration not allowed. Stop routing to access configuration.
+  div.container
+    div.row
+      div.col-md-8
+        unless reroutes
+          h1= title    
+
+          form.form-horizontal(method="post", id="configForm")
+            div(class='input-group')
+              span(class='input-group-addon')='Source Server'
+              input.form-control(id="editSourceServer", value=sourceServer, type="text", name="source-server")
+            
+            div(class='input-group')
+              span(class='input-group-addon')='RTMP Port      '
+              input.form-control(type="text", value=rtmpPort, size=6, name="rtmp-port", id="editRTMPPort")
+            
+            div(class='input-group')
+              span(class='input-group-addon')='Control Port'
+              input.form-control(type="text", value=controlPort, size=6, name="control-port", id="editControlPort")        
+            
+            div(class='input-group')
+              span(class='input-group-addon')='Source App'
+              input.form-control(type="text", value=sourceApp, name="source-app", id="editSourceApp")
+            
+            div(class='input-group')
+              span(class='input-group-addon')='Target App'
+              input.form-control(type="text", value=targetApp, name="target-app", id="editTargetApp")    
+
+            div.well.well-sm
+              div.checkbox
+                label='Clear Registered Streams'
+                  input(type='checkbox')    
+
+            input.btn.btn-default(type="submit", value="Save")
+        if reroutes
+          div.container      
+            h1= title
+            div.alert.alert-danger='Reroutes currently active, configuration not allowed. Stop routing to access configuration.'
   //
     a(href='/reroute-stop')!= "« Stop Reroutes »"

@@ -1,11 +1,13 @@
 extends layout
 
 block content
-  h1= title
-  form( method="post")
-    div
-      div
-        span Stream Name :
-          input(type="text", name="stream-name", id="editStreamName")
-      div#editSubmit
-        input(type="submit", value="Register")
+  div.container  
+    div.row
+      div.col-md-4
+        h1= title
+        form.form-horizontal(method="post", id="configForm")
+          div(class='input-group')
+            span(class='input-group-addon')='New Stream'
+            input.form-control(name="stream-name", id="editStreamName", placeholder="stream name")                
+          
+          input.btn.btn-default(type="submit", value="Register")

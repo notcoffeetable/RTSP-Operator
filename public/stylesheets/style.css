@@ -1,7 +1,3 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
 a {
   color: #00b7ff;
 }
@@ -14,4 +10,8 @@ div.footer {
 div.footer span {
   padding-left: 2px;
   padding-right: 3px;
+}
+span.input-group-addon {
+  min-width: 120px;
+  text-align: lefts;
 }

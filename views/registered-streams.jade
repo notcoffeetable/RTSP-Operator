@@ -1,34 +1,35 @@
 extends layout
 
 block content
-  h1= title
-  #streams  
-  p Select the stream to reroute to 
-    span= 'rtmp://' + server + ':' + rtmpPort + '/'
-    span= targetApp
-  - each stream in streams
-      div
-        a(target='_blank' href='/reroute?stream=' + stream)= stream
+  div.container
+    h1= title
+    #streams  
+    p Select the stream to reroute to 
+      span= 'rtmp://' + server + ':' + rtmpPort + '/'
+      span= targetApp
+    - each stream in streams
         div
-          | <script src="http://jwpsrv.com/library/VhLYqNFQEeOm9SIACi0I_Q.js"></script>
-          | <script src="http://jwpsrv.com/library/VhLYqNFQEeOm9SIACi0I_Q.js"></script>
-          | <div id='
-          =stream
-          |'></div>
-          | <script type='text/javascript'>
-          |     jwplayer('
-          = stream
-          |').setup({
-          |         file: '
-          = 'rtmp://' + server + ':' + rtmpPort + '/' + sourceApp +'/' + stream
-          |',
-          |         width: '320',
-          |         height: '180',
-          |         controls: 'false',
-          |         mute: 'true',
-          |         autostart: 'true'
-          |     });
-          | </script>
+          a(target='_blank' href='/reroute?stream=' + stream)= stream
+          div
+            | <script src="http://jwpsrv.com/library/VhLYqNFQEeOm9SIACi0I_Q.js"></script>
+            | <script src="http://jwpsrv.com/library/VhLYqNFQEeOm9SIACi0I_Q.js"></script>
+            | <div id='
+            =stream
+            |'></div>
+            | <script type='text/javascript'>
+            |     jwplayer('
+            = stream
+            |').setup({
+            |         file: '
+            = 'rtmp://' + server + ':' + rtmpPort + '/' + sourceApp +'/' + stream
+            |',
+            |         width: '320',
+            |         height: '180',
+            |         controls: 'false',
+            |         mute: 'true',
+            |         autostart: 'true'
+            |     });
+            | </script>
 //          |  <PARAM NAME="src" VALUE="
 //          = sourceServ + stream
 //          |  ";>
